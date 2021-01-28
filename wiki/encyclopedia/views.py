@@ -1,9 +1,12 @@
-from django.shortcuts import render
 import random
+
 from django import forms
-from markdown2 import Markdown
+from django.shortcuts import render
 
 from . import util
+
+from markdown2 import Markdown
+
 markdowner = Markdown()
 
 
