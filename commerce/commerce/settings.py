@@ -81,6 +81,18 @@ DATABASES = {
     }
 }
 
+DATABASES = {                                                                   
+    'default': {                                                                
+        'ENGINE': 'django.db.backends.mysql',                                   
+        'NAME': 'django',                                                       
+        'USER': 'django',                                                         
+        'PASSWORD': 'django',                                              
+        'HOST': '127.0.0.1',                                                                                   
+        'OPTIONS': {                                                            
+            'sql_mode': 'traditional',                                          
+        }                                                                       
+    }                                                                           
+}
 AUTH_USER_MODEL = 'auctions.User'
 
 # Password validation
