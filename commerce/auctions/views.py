@@ -1,69 +1,112 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 import datetime
-from django.contrib.auth.decorators import login_required
+
+from annoying.functions import get_object_or_None
 
 from .models import User
 
 
+# this is the default view
 def index(request):
     return render(request, "auctions/index.html")
 
 
+# this is the view for login
 def login_view(request):
     if request.method == "POST":
-
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
-
         # Check if authentication successful
         if user is not None:
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
+        # if not authenticated
         else:
             return render(request, "auctions/login.html", {
-                "message": "Invalid username and/or password."
+                "message": "Invalid username and/or password.",
+                "msg_type": "danger"
             })
+    # if GET request
     else:
         return render(request, "auctions/login.html")
 
 
+# view for logging out
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
 
+# view for registering
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
-
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
             return render(request, "auctions/register.html", {
-                "message": "Passwords must match."
+                "message": "Passwords must match.",
+                "msg_type": "danger"
             })
-
+        if not username:
+            return render(request, "auctions/register.html", {
+                "message": "Please enter your username.",
+                "msg_type": "danger"
+            })
+        if not email:
+            return render(request, "auctions/register.html", {
+                "message": "Please enter your email.",
+                "msg_type": "danger"
+            })
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
             return render(request, "auctions/register.html", {
-                "message": "Username already taken."
+                "message": "Username already taken.",
+                "msg_type": "danger"
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
+    # if GET request
     else:
         return render(request, "auctions/register.html")
 
+
+# view for dashboard
+@login_required(login_url='/login')
+def dashboard(request):
+    winners = Winner.objects.filter(winner=request.user.username)
+    # checking for watchlist
+    lst = Watchlist.objects.filter(user=request.user.username)
+    # list of products available in WinnerModel
+    present = False
+    prodlst = []
+    i = 0
+    if lst:
+        present = True
+        for item in lst:
+            product = Listing.objects.get(id=item.listingid)
+            prodlst.append(product)
+    print(prodlst)
+    return render(request, "auctions/dashboard.html", {
+        "product_list": prodlst,
+        "present": present,
+        "products": winners
+    })
+
+
+# view for showing the active lisitngs
 @login_required(login_url='/login')
 def activelisting(request):
     # list of products available
@@ -77,10 +120,46 @@ def activelisting(request):
         "empty": empty
     })
 
+
+# view to create a lisiting
+@login_required(login_url='/login')
+def createlisting(request):
+    # if user submitted the create listing form
+    if request.method == "POST":
+        # item is of type Listing (object)
+        item = Listing()
+        # assigning the data submitted via form to the object
+        item.seller = request.user.username
+        item.title = request.POST.get('title')
+        item.description = request.POST.get('description')
+        item.category = request.POST.get('category')
+        item.starting_bid = request.POST.get('starting_bid')
+        # submitting data of the image link is optional
+        if request.POST.get('image_link'):
+            item.image_link = request.POST.get('image_link')
+        else:
+            item.image_link = "https://www.aust-biosearch.com.au/wp-content/themes/titan/images/noimage.gif"
+        # saving the data into the database
+        item.save()
+        # retrieving the new products list after adding and displaying
+        products = Listing.objects.all()
+        empty = False
+        if len(products) == 0:
+            empty = True
+        return render(request, "auctions/activelisting.html", {
+            "products": products,
+            "empty": empty
+        })
+    # if request is get
+    else:
+        return render(request, "auctions/createlisting.html")
+
+
 # view to display all the categories
 @login_required(login_url='/login')
 def categories(request):
     return render(request, "auctions/categories.html")
+
 
 # view to display individual listing
 @login_required(login_url='/login')
