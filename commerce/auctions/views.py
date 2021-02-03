@@ -1,14 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 import datetime
-
 from annoying.functions import get_object_or_None
+from django.contrib.auth.decorators import login_required
 
-from .models import User
+from .models import *
 
 
 # this is the default view

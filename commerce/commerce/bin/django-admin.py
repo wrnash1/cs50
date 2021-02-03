@@ -1,4 +1,4 @@
-#!/home/wrnash/Development/cs50/commerce/commerce/bin/python
+#!/home/wrnash/Downloads/CS50w-Commerce-master/commerce/bin/python
 # When the django-admin.py deprecation ends, remove this script.
 import warnings
 

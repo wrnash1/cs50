@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+# this is the model for users and it inherits AbstractUser
 class User(AbstractUser):
     pass
 

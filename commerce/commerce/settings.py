@@ -74,25 +74,13 @@ WSGI_APPLICATION = 'commerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#    }
-#}
-
-DATABASES = {                                                                   
-    'default': {                                                                
-        'ENGINE': 'django.db.backends.mysql',                                   
-        'NAME': 'django',                                                       
-        'USER': 'django',                                                         
-        'PASSWORD': 'django',                                              
-        'HOST': '127.0.0.1',                                                                                   
-        'OPTIONS': {                                                            
-            'sql_mode': 'traditional',                                          
-        }                                                                       
-    }                                                                           
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
+
 AUTH_USER_MODEL = 'auctions.User'
 
 # Password validation
@@ -119,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 

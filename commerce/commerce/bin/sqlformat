@@ -1,4 +1,4 @@
-#!/home/wrnash/Development/cs50/commerce/commerce/bin/python
+#!/home/wrnash/Downloads/CS50w-Commerce-master/commerce/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/wrnash/Development/cs50/commerce/commerce"
+VIRTUAL_ENV="/home/wrnash/Downloads/CS50w-Commerce-master/commerce"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
